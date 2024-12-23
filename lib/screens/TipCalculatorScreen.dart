@@ -8,7 +8,7 @@ class TipCalculatorScreen extends StatefulWidget {
 
 class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
   final TextEditingController _billController = TextEditingController();
-  double _tipPercentage = 10.0;
+  double _tipPercentage = 10.0; // Initial tip percentage
   double _tipAmount = 0.0;
   double _totalAmount = 0.0;
 
@@ -24,14 +24,6 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
     }
   }
 
-  // Function to update the tip percentage
-  void _updateTipPercentage(double percentage) {
-    setState(() {
-      _tipPercentage = percentage;
-      _calculateTip();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +35,7 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Bill Amount Input
             Text(
               'Enter the bill amount:',
               style: TextStyle(fontSize: 18),
@@ -57,6 +50,8 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
               onChanged: (value) => _calculateTip(),
             ),
             SizedBox(height: 20),
+
+            // Tip Percentage Selector Buttons
             Text(
               'Select tip percentage:',
               style: TextStyle(fontSize: 18),
@@ -65,20 +60,57 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () => _updateTipPercentage(10),
+                  onPressed: () {
+                    setState(() {
+                      _tipPercentage = 10;
+                      _calculateTip();
+                    });
+                  },
                   child: Text('10%'),
                 ),
                 ElevatedButton(
-                  onPressed: () => _updateTipPercentage(15),
+                  onPressed: () {
+                    setState(() {
+                      _tipPercentage = 15;
+                      _calculateTip();
+                    });
+                  },
                   child: Text('15%'),
                 ),
                 ElevatedButton(
-                  onPressed: () => _updateTipPercentage(20),
+                  onPressed: () {
+                    setState(() {
+                      _tipPercentage = 20;
+                      _calculateTip();
+                    });
+                  },
                   child: Text('20%'),
                 ),
               ],
             ),
             SizedBox(height: 20),
+
+            // Tip Percentage Slider
+            Text(
+              'Adjust tip percentage:',
+              style: TextStyle(fontSize: 18),
+            ),
+            Slider(
+              value: _tipPercentage,
+              min: 0,
+              max: 100,
+              divisions: 20, // Dividing the slider into 20 steps
+              label: '${_tipPercentage.toStringAsFixed(0)}%',
+              onChanged: (value) {
+                setState(() {
+                  _tipPercentage = value;
+                  _calculateTip();
+                });
+              },
+            ),
+            SizedBox(height: 20),
+
+            // Display Tip and Total Amount
             Text(
               'Tip Amount: \$${_tipAmount.toStringAsFixed(2)}',
               style: TextStyle(fontSize: 18),
