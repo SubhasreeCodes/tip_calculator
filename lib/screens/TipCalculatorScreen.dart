@@ -8,18 +8,22 @@ class TipCalculatorScreen extends StatefulWidget {
 
 class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
   final TextEditingController _billController = TextEditingController();
+  int _peopleCount = 1; // Default to 1 person
+
   double _tipPercentage = 10.0; // Initial tip percentage
   double _tipAmount = 0.0;
   double _totalAmount = 0.0;
+  double _amountPerPerson = 0.0;
 
-  // Function to calculate the tip and total
+  // Function to calculate the tip, total, and amount per person
   void _calculateTip() {
     double billAmount = double.tryParse(_billController.text) ?? 0.0;
 
-    if (billAmount > 0) {
+    if (billAmount > 0 && _peopleCount > 0) {
       setState(() {
         _tipAmount = billAmount * _tipPercentage / 100;
         _totalAmount = billAmount + _tipAmount;
+        _amountPerPerson = _totalAmount / _peopleCount;
       });
     }
   }
@@ -53,7 +57,7 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
                 // Total Amount Card
                 Container(
                   padding: EdgeInsets.all(16.0),
-                  margin: EdgeInsets.only(bottom: 16.0), // Space below the total card
+                  margin: EdgeInsets.only(bottom: 32.0), // Increased bottom margin
                   decoration: BoxDecoration(
                     color: Colors.blueAccent, // Background color for the total card
                     borderRadius: BorderRadius.circular(12.0),
@@ -94,6 +98,42 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
                     hintText: 'Bill amount',
                   ),
                   onChanged: (value) => _calculateTip(),
+                ),
+                SizedBox(height: 20),
+
+                // Number of People Input with + and - Buttons
+                Text(
+                  'Number of people:',
+                  style: TextStyle(fontSize: 18),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.remove),
+                      onPressed: () {
+                        setState(() {
+                          if (_peopleCount > 1) {
+                            _peopleCount--;
+                          }
+                          _calculateTip();
+                        });
+                      },
+                    ),
+                    Text(
+                      '$_peopleCount',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        setState(() {
+                          _peopleCount++;
+                          _calculateTip();
+                        });
+                      },
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
 
@@ -159,6 +199,14 @@ class _TipCalculatorScreenState extends State<TipCalculatorScreen> {
                 // Display Tip Amount
                 Text(
                   'Tip Amount: \₹ ${_tipAmount.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 18),
+                ),
+
+                SizedBox(height: 20),
+
+                // Display Amount Per Person
+                Text(
+                  'Amount Per Person: \₹ ${_amountPerPerson.toStringAsFixed(2)}',
                   style: TextStyle(fontSize: 18),
                 ),
               ],
